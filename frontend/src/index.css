@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-white text-stone-900 font-sans antialiased selection:bg-black selection:text-white min-h-screen;
+  }
+
+  /* Universal smooth transition for all divs, text, cards, and themeable elements */
+  *, ::before, ::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 450ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Support for iOS safe bottom inset */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* GLOBAL ROBUST DARK MODE INVERSIONS (Ensures 100% of all cards, divs, inputs, and text invert) */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #09090b !important;
+  color: #fafafa !important;
+}
+
+html.dark .bg-white {
+  background-color: #18181b !important;
+  color: #fafafa;
+}
+
+html.dark .bg-stone-50,
+html.dark .bg-stone-100 {
+  background-color: #27272a !important;
+  color: #fafafa;
+}
+
+html.dark .text-stone-900,
+html.dark .text-stone-800,
+html.dark .text-stone-700,
+html.dark .text-black {
+  color: #fafafa !important;
+}
+
+html.dark .text-stone-600,
+html.dark .text-stone-500 {
+  color: #a1a1aa !important;
+}
+
+html.dark .text-stone-400 {
+  color: #71717a !important;
+}
+
+html.dark .border-stone-200,
+html.dark .border-stone-100,
+html.dark .border-stone-300 {
+  border-color: #27272a !important;
+}
+
+html.dark .border-black {
+  border-color: #fafafa !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border-color: #27272a !important;
+}
+
+html.dark .bg-black {
+  background-color: #fafafa !important;
+  color: #09090b !important;
+}
+
+html.dark .bg-black * {
+  color: #09090b !important;
+}
+
+/* Precise Button ➔ Screen ➔ Button Luminous Pulse Wave (Slower, Elegant & Relaxed) */
+@keyframes luminous-button-pulse {
+  /* 1. Starts strictly on button at 0px */
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.85;
+  }
+  /* 2. Smoothly blossoms outward across full screen */
+  46% {
+    transform: translate(-50%, -50%) scale(45);
+    opacity: 0.35;
+  }
+  54% {
+    transform: translate(-50%, -50%) scale(45);
+    opacity: 0.35;
+  }
+  /* 3. Smoothly contracts directly back onto button */
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+}
+
+.theme-button-to-button-overlay {
+  position: fixed;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  pointer-events: none !important;
+  z-index: 999999;
+  will-change: transform, opacity;
+  animation: luminous-button-pulse 950ms cubic-bezier(0.25, 1, 0.35, 1) forwards;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
