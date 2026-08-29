@@ -24,25 +24,28 @@ async def lifespan(app: FastAPI):
     for sub in ["designs", "custom_requests", "customers", "orders", "services", "general"]:
         os.makedirs(os.path.join(settings.UPLOAD_DIR, sub), exist_ok=True)
 
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("[*] Database tables verified & connected successfully.")
+    except Exception as e:
+        print(f"[!] Database connection notice during table creation: {e}")
 
     # Safe column migrations for SQLite
-    with engine.connect() as conn:
-        try:
+    try:
+        with engine.connect() as conn:
             from sqlalchemy import text
             conn.execute(text("ALTER TABLE custom_requests ADD COLUMN notes TEXT;"))
             conn.commit()
-        except Exception:
-            pass
+    except Exception:
+        pass
 
     # Seed on fresh start if database empty
-    db = SessionLocal()
     try:
+        db = SessionLocal()
         seed_db(db)
+        db.close()
     except Exception as e:
         print(f"[*] Seeding notice: {e}")
-    finally:
-        db.close()
 
     yield
     # Shutdown
