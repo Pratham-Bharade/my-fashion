@@ -50,16 +50,6 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const fillDevAccount = (type: 'admin' | 'customer') => {
-    if (type === 'admin') {
-      setEmail('vandanabharade358@gmail.com');
-      setPassword('Admin@123456');
-    } else {
-      setEmail('priya@example.com');
-      setPassword('Customer@123456');
-    }
-  };
-
   return (
     <div className="min-h-[75vh] flex flex-col justify-center py-8 px-4 sm:px-6 bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center space-y-2">
@@ -97,10 +87,11 @@ export const LoginPage: React.FC = () => {
             <Input
               label="Email Address"
               type="email"
-              placeholder="e.g. ananya.sharma@gmail.com"
+              placeholder="e.g. your-email@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               leftIcon={<Mail className="w-4 h-4 text-stone-500" />}
+              autoComplete="email"
               required
             />
 
@@ -111,6 +102,7 @@ export const LoginPage: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               leftIcon={<Lock className="w-4 h-4 text-stone-500" />}
+              autoComplete="current-password"
               required
             />
 
@@ -128,33 +120,6 @@ export const LoginPage: React.FC = () => {
               Sign in
             </Button>
           </form>
-
-          {/* Quick 1-Click Login Section - Stacked Layout */}
-          <div className="pt-3 border-t border-stone-100 dark:border-stone-800 text-center space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 block">
-              Quick 1-Click Login
-            </span>
-            
-            <div className="flex flex-col items-center gap-2 w-full">
-              {/* 1. Customer Button - Big in size */}
-              <button
-                type="button"
-                onClick={() => fillDevAccount('customer')}
-                className="w-full py-2.5 px-4 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 border border-stone-300 dark:border-stone-700 text-sm font-bold text-black dark:text-white shadow-2xs hover:shadow-xs transition-all active:scale-[0.99] flex items-center justify-center gap-2"
-              >
-                <span>👤 Quick Login as Customer</span>
-              </button>
-
-              {/* 2. Admin Button - Small in size, below customer */}
-              <button
-                type="button"
-                onClick={() => fillDevAccount('admin')}
-                className="py-1 px-3 rounded-lg text-[11px] font-medium text-stone-500 dark:text-stone-400 hover:text-black dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 border border-transparent hover:border-stone-200 dark:hover:border-stone-700 transition-colors inline-flex items-center gap-1.5"
-              >
-                <span>👑 Admin Login</span>
-              </button>
-            </div>
-          </div>
 
           {/* Register Link */}
           <div className="pt-1 text-center text-xs text-stone-500 dark:text-stone-400">
