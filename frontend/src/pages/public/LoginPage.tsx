@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authApi } from '../../api/auth';
 import { useToast } from '../../context/ToastContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
-import { Lock, Mail, ArrowRight, UserCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, UserCheck, Shield } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const { success } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/dashboard';
   const message = searchParams.get('msg') || searchParams.get('message');
+  const isAdminLogin = redirect.startsWith('/admin') || searchParams.get('role') === 'admin';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Strictly enforce empty inputs on mount and route change (blocks browser autofill)
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+    setError(null);
+  }, [location.pathname, location.search]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,11 +67,16 @@ export const LoginPage: React.FC = () => {
           alt="Vandana Creations"
           className="h-20 sm:h-24 w-auto object-contain mx-auto"
         />
-        <h2 className="text-xl sm:text-2xl font-serif font-bold text-black dark:text-white">
-          Customer Sign In
-        </h2>
+        <div className="flex items-center justify-center gap-2">
+          {isAdminLogin && <Shield className="w-5 h-5 text-amber-500" />}
+          <h2 className="text-xl sm:text-2xl font-serif font-bold text-black dark:text-white">
+            {isAdminLogin ? 'Admin Studio Sign In' : 'Customer Sign In'}
+          </h2>
+        </div>
         <p className="text-xs text-stone-500 dark:text-stone-400">
-          Access your measurements, bookings & order progress.
+          {isAdminLogin
+            ? 'Enter your administrative credentials to manage the boutique atelier.'
+            : 'Access your measurements, bookings & order progress.'}
         </p>
       </div>
 
@@ -83,26 +97,28 @@ export const LoginPage: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} autoComplete="off" className="space-y-3">
             <Input
               label="Email Address"
               type="email"
-              placeholder="e.g. your-email@gmail.com"
+              name="boutique_user_email"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               leftIcon={<Mail className="w-4 h-4 text-stone-500" />}
-              autoComplete="email"
+              autoComplete="off"
               required
             />
 
             <Input
               label="Password"
               type="password"
-              placeholder="Enter your password (e.g. ••••••••)"
+              name="boutique_user_password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               leftIcon={<Lock className="w-4 h-4 text-stone-500" />}
-              autoComplete="current-password"
+              autoComplete="new-password"
               required
             />
 
@@ -122,12 +138,14 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Register Link */}
-          <div className="pt-1 text-center text-xs text-stone-500 dark:text-stone-400">
-            Don't have an account?{' '}
-            <Link to={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} className="font-bold text-black dark:text-white hover:underline">
-              Create customer account
-            </Link>
-          </div>
+          {!isAdminLogin && (
+            <div className="pt-1 text-center text-xs text-stone-500 dark:text-stone-400">
+              Don't have an account?{' '}
+              <Link to={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} className="font-bold text-black dark:text-white hover:underline">
+                Create customer account
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
