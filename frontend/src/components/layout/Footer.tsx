@@ -108,9 +108,18 @@ export const Footer: React.FC = () => {
         {/* Bottom */}
         <div className="mt-8 pt-4 border-t border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-500 dark:text-stone-400 gap-2">
           <p>© {new Date().getFullYear()} {businessName}. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Handcrafted with <Heart className="w-3 h-3 text-black dark:text-white fill-black dark:fill-white" /> for Graceful Fashion
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/login?role=admin"
+              className="text-stone-400 hover:text-black dark:hover:text-white transition-colors"
+            >
+              Admin Portal
+            </Link>
+            <span className="text-stone-300 dark:text-stone-700">•</span>
+            <p className="flex items-center gap-1">
+              Handcrafted with <Heart className="w-3 h-3 text-black dark:text-white fill-black dark:fill-white" /> for Graceful Fashion
+            </p>
+          </div>
         </div>
       </div>
     </footer>

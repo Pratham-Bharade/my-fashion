@@ -12,10 +12,11 @@ export const LoginPage: React.FC = () => {
   const { success } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/dashboard';
   const message = searchParams.get('msg') || searchParams.get('message');
-  const isAdminLogin = redirect.startsWith('/admin') || searchParams.get('role') === 'admin';
+  const initialIsAdmin = redirect.startsWith('/admin') || searchParams.get('role') === 'admin';
+  const [isAdminMode, setIsAdminMode] = useState(initialIsAdmin);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +28,10 @@ export const LoginPage: React.FC = () => {
     setEmail('');
     setPassword('');
     setError(null);
-  }, [location.pathname, location.search]);
+    if (initialIsAdmin) {
+      setIsAdminMode(true);
+    }
+  }, [location.pathname, location.search, initialIsAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +54,7 @@ export const LoginPage: React.FC = () => {
       if (tokenData.role === 'ADMIN') {
         navigate('/admin');
       } else {
-        navigate(redirect);
+        navigate(isAdminMode ? '/admin' : redirect);
       }
     } catch (err: any) {
       setError(err.message || 'Invalid email or password.');
@@ -68,14 +72,14 @@ export const LoginPage: React.FC = () => {
           className="h-20 sm:h-24 w-auto object-contain mx-auto"
         />
         <div className="flex items-center justify-center gap-2">
-          {isAdminLogin && <Shield className="w-5 h-5 text-amber-500" />}
+          {isAdminMode && <Shield className="w-5 h-5 text-amber-500" />}
           <h2 className="text-xl sm:text-2xl font-serif font-bold text-black dark:text-white">
-            {isAdminLogin ? 'Admin Studio Sign In' : 'Customer Sign In'}
+            {isAdminMode ? 'Admin Studio Sign In' : 'Customer Sign In'}
           </h2>
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-400">
-          {isAdminLogin
-            ? 'Enter your administrative credentials to manage the boutique atelier.'
+          {isAdminMode
+            ? 'Enter your administrative credentials to manage orders, catalog & bookings.'
             : 'Access your measurements, bookings & order progress.'}
         </p>
       </div>
@@ -83,6 +87,39 @@ export const LoginPage: React.FC = () => {
       <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="bg-white dark:bg-stone-900 py-6 px-5 sm:px-6 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-2xs space-y-4">
           
+          {/* Customer / Admin Tab Switcher */}
+          <div className="grid grid-cols-2 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+            <button
+              type="button"
+              onClick={() => {
+                setIsAdminMode(false);
+                setError(null);
+              }}
+              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
+                !isAdminMode
+                  ? 'bg-white dark:bg-stone-950 text-black dark:text-white shadow-xs'
+                  : 'text-stone-500 hover:text-black dark:hover:text-white'
+              }`}
+            >
+              Customer Login
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsAdminMode(true);
+                setError(null);
+              }}
+              className={`py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                isAdminMode
+                  ? 'bg-black dark:bg-white text-white dark:text-black shadow-xs'
+                  : 'text-stone-500 hover:text-black dark:hover:text-white'
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5 text-amber-400 dark:text-amber-600" />
+              Admin Login
+            </button>
+          </div>
+
           {/* Friendly Customer Banner if Redirected */}
           {message ? (
             <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs font-medium flex items-center gap-2.5">
@@ -138,7 +175,7 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Register Link */}
-          {!isAdminLogin && (
+          {!isAdminMode && (
             <div className="pt-1 text-center text-xs text-stone-500 dark:text-stone-400">
               Don't have an account?{' '}
               <Link to={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} className="font-bold text-black dark:text-white hover:underline">
