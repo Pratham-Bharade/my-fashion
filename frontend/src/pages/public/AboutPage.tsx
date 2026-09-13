@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSettings } from '../../context/SettingsContext';
 import { Sparkles, Heart, Award, ShieldCheck, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '../../components/common/Button';
+import { SITE_MEDIA } from '../../config/siteMedia';
 
 export const AboutPage: React.FC = () => {
   const { settings } = useSettings();
@@ -51,9 +52,12 @@ export const AboutPage: React.FC = () => {
           <div className="lg:col-span-6">
             <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow-xs border border-stone-200 dark:border-stone-800">
               <img
-                src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=700&q=80"
+                src={SITE_MEDIA.about.storyPhoto}
                 alt="Vandana Creations Craftsmanship"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=700&q=80';
+                }}
               />
             </div>
           </div>

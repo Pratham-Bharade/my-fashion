@@ -7,6 +7,7 @@ import { Service, Design, Review } from '../../types';
 import { ServiceCard } from '../../components/customer/ServiceCard';
 import { DesignCard } from '../../components/customer/DesignCard';
 import { Button } from '../../components/common/Button';
+import { SITE_MEDIA } from '../../config/siteMedia';
 import {
   Calendar,
   Sparkles,
@@ -138,9 +139,12 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-xs sm:max-w-sm aspect-4/5 rounded-2xl overflow-hidden shadow-md border-2 border-black dark:border-stone-700 bg-stone-100 dark:bg-stone-800">
                 <img
-                  src="D:\Ai Projects\fashion\frontend\public\homepage_photo.png"
+                  src={SITE_MEDIA.home.heroPhoto}
                   alt="Vandana Creations Saree & Blouse"
                   className="w-full h-full object-cover object-top"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/homepage_photo.png';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4 text-white">
                   <div>
