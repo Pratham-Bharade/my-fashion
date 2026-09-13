@@ -29,7 +29,7 @@ export const BottomNav: React.FC = () => {
           if (item.highlight) {
             return (
               <NavLink
-                key={item.href}
+                key={item.label}
                 to={item.href}
                 className="flex flex-col items-center justify-center -mt-5 group"
               >
@@ -45,7 +45,7 @@ export const BottomNav: React.FC = () => {
 
           return (
             <NavLink
-              key={item.href}
+              key={item.label}
               to={item.href}
               className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all ${
                 isActive
