@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 from datetime import datetime, date, time, timedelta, timezone
 
 if sys.platform == "win32":
@@ -21,8 +21,8 @@ def seed_db(db: Session):
             business_name="Vandana Creations",
             logo="/logo.png",
             phone="+91 93222 28426",
-            email="contact@vandanacreations.com",
-            address="14, Fashion Street, Near Heritage Circle, Pune, Maharashtra 411001",
+            email="vandanabharade358@gmail.com",
+            address="Moshi, Pune, Maharashtra 412105",
             whatsapp="+919322228426",
             working_hours={
                 "monday": {"open": "10:00", "close": "20:00", "is_closed": False},
@@ -33,12 +33,11 @@ def seed_db(db: Session):
                 "saturday": {"open": "10:00", "close": "20:00", "is_closed": False},
                 "sunday": {"open": "11:00", "close": "17:00", "is_closed": False}
             },
-            holidays=["2026-08-15", "2026-10-02", "2026-11-08"],
+            holidays=[],
             social_links={
                 "instagram": "https://instagram.com/vandanacreations",
                 "facebook": "https://facebook.com/vandanacreations",
-                "youtube": "https://youtube.com/@vandanacreations",
-                "pinterest": "https://pinterest.com/vandanacreations"
+                "youtube": "https://youtube.com/@vandanacreations"
             },
             about_text="With over 15 years of dedicated bespoke tailoring craftsmanship, Vandana Creations specializes in sarees, bridal couture, royal designer blouses, and contemporary kurtis. Every stitch is crafted with passion for a graceful, modern, and stylish silhouette."
         )
@@ -47,7 +46,7 @@ def seed_db(db: Session):
     else:
         settings_record.business_name = "Vandana Creations"
         settings_record.logo = "/logo.png"
-        settings_record.email = "contact@vandanacreations.com"
+        settings_record.email = "vandanabharade358@gmail.com"
         settings_record.phone = "+91 93222 28426"
         settings_record.whatsapp = "+919322228426"
 
@@ -74,7 +73,7 @@ def seed_db(db: Session):
             },
             {
                 "name": "Salwar Suit & Anarkali Custom Tailoring",
-                "category": ServiceCategory.SALWAR_SUIT,
+                "category": ServiceCategory.DRESSES,
                 "description": "Perfect fitting Punjabi suits, Pakistani floor-length Anarkalis, pant suits with customized neck and sleeve patterns.",
                 "price": 1100.0,
                 "estimated_days": 5,
@@ -83,7 +82,7 @@ def seed_db(db: Session):
             },
             {
                 "name": "Contemporary Kurti & Tunic Stitching",
-                "category": ServiceCategory.KURTI,
+                "category": ServiceCategory.KURTIS,
                 "description": "Straight-cut, A-line, Alia cut, and asymmetric designer kurtis tailored to personal comfort and style.",
                 "price": 650.0,
                 "estimated_days": 3,
@@ -92,7 +91,7 @@ def seed_db(db: Session):
             },
             {
                 "name": "Evening Gown & Reception Dress Tailoring",
-                "category": ServiceCategory.WESTERN,
+                "category": ServiceCategory.DRESSES,
                 "description": "Bespoke floor-length drape gowns, indo-western party wear with built-in corsets and flowy silhouettes.",
                 "price": 2800.0,
                 "estimated_days": 8,
