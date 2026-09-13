@@ -49,9 +49,10 @@ export const AdminQuotationsPage: React.FC = () => {
         search: searchTerm.trim() || undefined,
         limit: 50,
       });
-      setQuotations(res.items || []);
+      setQuotations(res?.items || []);
     } catch (err) {
       console.error('Failed to load quotations:', err);
+      setQuotations([]);
     } finally {
       setIsLoading(false);
     }

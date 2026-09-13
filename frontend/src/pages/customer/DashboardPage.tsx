@@ -74,12 +74,16 @@ export const DashboardPage: React.FC = () => {
             return tB - tA;
           });
 
-        setOrders(sortDesc(ordRes.data || []));
-        setAppointments(sortDesc(aptRes.data || []));
-        setCustomRequests(sortDesc(reqRes.data || []));
-        setMeasurements(meaRes.data || []);
+        setOrders(sortDesc(ordRes?.data || []));
+        setAppointments(sortDesc(aptRes?.data || []));
+        setCustomRequests(sortDesc(reqRes?.data || []));
+        setMeasurements(meaRes?.data || []);
       } catch (err) {
         console.error('Failed to load customer dashboard:', err);
+        setOrders([]);
+        setAppointments([]);
+        setCustomRequests([]);
+        setMeasurements([]);
       } finally {
         setIsLoading(false);
       }
@@ -87,9 +91,9 @@ export const DashboardPage: React.FC = () => {
     fetchDashboard();
   }, []);
 
-  const activeOrders = orders.filter((o) => o.status !== 'DELIVERED' && o.status !== 'CANCELLED');
-  const upcomingAppointments = appointments.filter((a) => a.status !== 'CANCELLED');
-  const activeCustomRequests = customRequests.filter((r) => r.status !== 'CONVERTED_TO_ORDER');
+  const activeOrders = (orders || []).filter((o) => o?.status && o.status !== 'DELIVERED' && o.status !== 'CANCELLED');
+  const upcomingAppointments = (appointments || []).filter((a) => a?.status && a.status !== 'CANCELLED');
+  const activeCustomRequests = (customRequests || []).filter((r) => r?.status && r.status !== 'CONVERTED_TO_ORDER');
 
   if (isLoading) {
     return (

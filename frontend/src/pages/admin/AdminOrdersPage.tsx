@@ -39,9 +39,10 @@ export const AdminOrdersPage: React.FC = () => {
         page,
         limit: 25,
       });
-      setOrders(res.items);
+      setOrders(res?.items || []);
     } catch (err) {
       console.error('Failed to load admin orders:', err);
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }

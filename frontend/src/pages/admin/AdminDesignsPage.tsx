@@ -55,11 +55,13 @@ export const AdminDesignsPage: React.FC = () => {
         designsApi.list({ include_inactive: true, limit: 100 }),
         servicesApi.list(undefined, true),
       ]);
-      setDesigns(desRes.items);
-      const sCats = srvRes.data.map((s) => s.category.toUpperCase().trim()).filter(Boolean);
+      setDesigns(desRes?.items || []);
+      const sCats = (srvRes?.data || []).map((s) => (s?.category ? s.category.toUpperCase().trim() : '')).filter(Boolean);
       setServiceCategories(Array.from(new Set(sCats)));
     } catch (err) {
       console.error('Failed to load designs:', err);
+      setDesigns([]);
+      setServiceCategories([]);
     } finally {
       setIsLoading(false);
     }
@@ -71,14 +73,15 @@ export const AdminDesignsPage: React.FC = () => {
 
   // Compute all available categories across both designs and services
   const allCategories = useMemo(() => {
-    const dCats = designs.map((d) => d.category.toUpperCase().trim()).filter(Boolean);
-    const combined = Array.from(new Set([...DEFAULT_PRESET_CATEGORIES, ...dCats, ...serviceCategories]));
+    const dCats = (designs || []).map((d) => (d?.category ? d.category.toUpperCase().trim() : '')).filter(Boolean);
+    const combined = Array.from(new Set([...DEFAULT_PRESET_CATEGORIES, ...dCats, ...(serviceCategories || [])]));
     return combined;
   }, [designs, serviceCategories]);
 
   const filteredDesigns = useMemo(() => {
-    if (selectedFilterCategory === 'ALL') return designs;
-    return designs.filter((d) => d.category.toUpperCase().trim() === selectedFilterCategory);
+    const list = designs || [];
+    if (selectedFilterCategory === 'ALL') return list;
+    return list.filter((d) => d?.category && d.category.toUpperCase().trim() === selectedFilterCategory);
   }, [designs, selectedFilterCategory]);
 
   const openCreateModal = () => {

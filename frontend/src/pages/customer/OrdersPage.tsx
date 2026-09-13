@@ -111,15 +111,18 @@ export const OrdersPage: React.FC = () => {
           return tB - tA;
         });
 
-      const nonCancelledOrders = (ordRes.data || []).filter((o) => o.status !== 'CANCELLED');
-      const nonCancelledAppointments = (aptRes.data || []).filter((a) => a.status !== 'CANCELLED');
-      const nonCancelledRequests = (reqRes.data || []).filter((r) => r.status !== 'CANCELLED');
+      const nonCancelledOrders = (ordRes?.data || []).filter((o) => o?.status && o.status !== 'CANCELLED');
+      const nonCancelledAppointments = (aptRes?.data || []).filter((a) => a?.status && a.status !== 'CANCELLED');
+      const nonCancelledRequests = (reqRes?.data || []).filter((r) => r?.status && r.status !== 'CANCELLED');
 
       setOrders(sortDesc(nonCancelledOrders));
       setAppointments(sortDesc(nonCancelledAppointments));
       setCustomRequests(sortDesc(nonCancelledRequests));
     } catch (err) {
       console.error('Failed to load customer orders/bookings:', err);
+      setOrders([]);
+      setAppointments([]);
+      setCustomRequests([]);
     } finally {
       setIsLoading(false);
     }

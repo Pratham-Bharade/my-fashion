@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { dashboardApi } from '../../api/contact';
-import { DashboardAnalytics } from '../../types';
+import { DashboardAnalytics, AdminDashboardStats } from '../../types';
 import { CardSkeleton } from '../../components/common/Skeleton';
 import { Button } from '../../components/common/Button';
 import {
@@ -51,7 +51,21 @@ export const AdminDashboardPage: React.FC = () => {
     );
   }
 
-  const { stats, monthly_revenue_trend, order_status_distribution, orders_by_service_category, recent_activity } = analytics;
+  const stats: AdminDashboardStats = analytics?.stats || {
+    total_customers: 0,
+    active_orders: 0,
+    todays_appointments: 0,
+    new_custom_requests: 0,
+    monthly_revenue: 0,
+    total_revenue: 0,
+    ready_orders: 0,
+    pending_appointments: 0,
+    pending_payments_amount: 0,
+  };
+  const monthly_revenue_trend = analytics?.monthly_revenue_trend || [];
+  const order_status_distribution = analytics?.order_status_distribution || [];
+  const orders_by_service_category = analytics?.orders_by_service_category || [];
+  const recent_activity = analytics?.recent_activity || [];
 
   return (
     <div className="space-y-8 bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">

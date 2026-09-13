@@ -47,9 +47,10 @@ export const AdminAppointmentsPage: React.FC = () => {
         status: (filterStatus as AppointmentStatus) || undefined,
         limit: 50,
       });
-      setAppointments(res.items);
+      setAppointments(res?.items || []);
     } catch (err) {
       console.error('Failed to load appointments:', err);
+      setAppointments([]);
     } finally {
       setIsLoading(false);
     }

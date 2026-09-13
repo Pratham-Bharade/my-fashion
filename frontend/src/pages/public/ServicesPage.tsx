@@ -34,9 +34,10 @@ export const ServicesPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await servicesApi.list();
-      setAllServices(res.data);
+      setAllServices(res?.data || []);
     } catch (err) {
       console.error('Failed to load services:', err);
+      setAllServices([]);
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +49,9 @@ export const ServicesPage: React.FC = () => {
 
   // Compute dynamic category tabs from all database services
   const categories = useMemo(() => {
-    const dbCats = allServices.map((s) => s.category.toUpperCase().trim()).filter(Boolean);
+    const dbCats = (allServices || [])
+      .map((s) => (s?.category ? s.category.toUpperCase().trim() : ''))
+      .filter(Boolean);
     const unique = Array.from(new Set(['ALL', ...dbCats]));
 
     return unique.map((key) => ({
@@ -59,8 +62,9 @@ export const ServicesPage: React.FC = () => {
 
   // Filter services instantly by activeCategory
   const displayedServices = useMemo(() => {
-    if (activeCategory === 'ALL') return allServices;
-    return allServices.filter((s) => s.category.toUpperCase().trim() === activeCategory);
+    const list = allServices || [];
+    if (activeCategory === 'ALL') return list;
+    return list.filter((s) => s?.category && s.category.toUpperCase().trim() === activeCategory);
   }, [allServices, activeCategory]);
 
   const handleCategorySelect = (catKey: string) => {
@@ -90,7 +94,7 @@ export const ServicesPage: React.FC = () => {
       {/* Category Pills - Automatically Shows Any New Category */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none justify-start sm:justify-center">
-          {categories.map((cat) => {
+          {(categories || []).map((cat) => {
             const isActive = activeCategory === cat.key;
             return (
               <button
@@ -117,7 +121,7 @@ export const ServicesPage: React.FC = () => {
               <CardSkeleton key={i} />
             ))}
           </div>
-        ) : displayedServices.length === 0 ? (
+        ) : (displayedServices || []).length === 0 ? (
           <EmptyState
             icon={<Scissors className="w-6 h-6 text-black dark:text-white" />}
             title="No Services Found"
@@ -127,7 +131,7 @@ export const ServicesPage: React.FC = () => {
           />
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-            {displayedServices.map((service) => (
+            {(displayedServices || []).map((service) => (
               <ServiceCard key={service.id} service={service} />
             ))}
           </div>

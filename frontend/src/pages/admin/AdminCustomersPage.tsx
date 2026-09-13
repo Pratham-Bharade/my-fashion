@@ -30,10 +30,11 @@ export const AdminCustomersPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await customersApi.list({ search: search || undefined, page, limit: 20 });
-      setCustomers(res.items);
-      setTotalPages(res.total_pages);
+      setCustomers(res?.items || []);
+      setTotalPages(res?.total_pages || 1);
     } catch (err) {
       console.error('Failed to load customers:', err);
+      setCustomers([]);
     } finally {
       setIsLoading(false);
     }

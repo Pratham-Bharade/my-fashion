@@ -40,12 +40,12 @@ export const CancellationsPage: React.FC = () => {
         customRequestsApi.getMy(),
       ]);
 
-      const cancelledOrders = (ordRes.data || []).filter((o) => o.status === 'CANCELLED');
-      const cancelledAppointments = (aptRes.data || []).filter((a) => a.status === 'CANCELLED');
-      const cancelledRequests = (reqRes.data || []).filter((r) => r.status === 'CANCELLED' || r.status === 'REJECTED');
+      const cancelledOrders = (ordRes?.data || []).filter((o) => o?.status && o.status === 'CANCELLED');
+      const cancelledAppointments = (aptRes?.data || []).filter((a) => a?.status && a.status === 'CANCELLED');
+      const cancelledRequests = (reqRes?.data || []).filter((r) => r?.status && (r.status === 'CANCELLED' || r.status === 'REJECTED'));
 
       const sortDesc = (items: any[]) =>
-        items.slice().sort((a, b) => {
+        (items || []).slice().sort((a, b) => {
           const tA = new Date(a.updated_at || a.created_at).getTime();
           const tB = new Date(b.updated_at || b.created_at).getTime();
           return tB - tA;
@@ -56,6 +56,9 @@ export const CancellationsPage: React.FC = () => {
       setCustomRequests(sortDesc(cancelledRequests));
     } catch (err) {
       console.error('Failed to load cancelled items:', err);
+      setOrders([]);
+      setAppointments([]);
+      setCustomRequests([]);
     } finally {
       setIsLoading(false);
     }

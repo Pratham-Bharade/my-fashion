@@ -42,9 +42,10 @@ export const GalleryPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await designsApi.list({ limit: 100 });
-      setAllDesigns(res.items);
+      setAllDesigns(res?.items || []);
     } catch (err) {
       console.error('Failed to load all designs:', err);
+      setAllDesigns([]);
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +57,9 @@ export const GalleryPage: React.FC = () => {
 
   // Compute dynamic category tabs from database designs
   const categories = useMemo(() => {
-    const dbCats = allDesigns.map((d) => d.category.toUpperCase().trim()).filter(Boolean);
+    const dbCats = (allDesigns || [])
+      .map((d) => (d?.category ? d.category.toUpperCase().trim() : ''))
+      .filter(Boolean);
     const unique = Array.from(new Set(['ALL', ...dbCats]));
 
     return unique.map((key) => ({
@@ -67,17 +70,17 @@ export const GalleryPage: React.FC = () => {
 
   // Instant filtering on allDesigns by category and search query
   const displayedDesigns = useMemo(() => {
-    let list = allDesigns;
+    let list = allDesigns || [];
     if (activeCategory !== 'ALL') {
-      list = list.filter((d) => d.category.toUpperCase().trim() === activeCategory);
+      list = list.filter((d) => d?.category && d.category.toUpperCase().trim() === activeCategory);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
       list = list.filter(
         (d) =>
-          d.title.toLowerCase().includes(q) ||
-          (d.description && d.description.toLowerCase().includes(q)) ||
-          (d.tags && d.tags.some((t) => t.toLowerCase().includes(q)))
+          d?.title?.toLowerCase().includes(q) ||
+          (d?.description && d.description.toLowerCase().includes(q)) ||
+          (d?.tags && Array.isArray(d.tags) && d.tags.some((t) => t.toLowerCase().includes(q)))
       );
     }
     return list;
@@ -123,7 +126,7 @@ export const GalleryPage: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-4">
         {/* Category Pills - Automatically Shows Any New Category */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none justify-start sm:justify-center">
-          {categories.map((cat) => {
+          {(categories || []).map((cat) => {
             const isActive = activeCategory === cat.key;
             return (
               <button
@@ -161,7 +164,7 @@ export const GalleryPage: React.FC = () => {
               <CardSkeleton key={i} />
             ))}
           </div>
-        ) : displayedDesigns.length === 0 ? (
+        ) : (displayedDesigns || []).length === 0 ? (
           <EmptyState
             icon={<Sparkles className="w-6 h-6 text-black dark:text-white" />}
             title="No Designs Found"
@@ -174,7 +177,7 @@ export const GalleryPage: React.FC = () => {
           />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-            {displayedDesigns.map((design) => (
+            {(displayedDesigns || []).map((design) => (
               <DesignCard
                 key={design.id}
                 design={design}
@@ -210,7 +213,7 @@ export const GalleryPage: React.FC = () => {
                     el.play().catch(() => {});
                   }
                 }}
-                src={selectedDesign.image.endsWith('.mp4') || selectedDesign.image.includes('/videos/') ? selectedDesign.image : getDesignVideo(selectedDesign.category)}
+                src={selectedDesign.image && (selectedDesign.image.endsWith('.mp4') || selectedDesign.image.includes('/videos/')) ? selectedDesign.image : getDesignVideo(selectedDesign.category)}
                 autoPlay
                 loop
                 muted={modalAudioMuted}
@@ -265,7 +268,7 @@ export const GalleryPage: React.FC = () => {
                 </div>
               )}
 
-              {selectedDesign.tags && selectedDesign.tags.length > 0 && (
+              {selectedDesign.tags && Array.isArray(selectedDesign.tags) && selectedDesign.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 pt-1">
                   {selectedDesign.tags.map((t, idx) => (
                     <span

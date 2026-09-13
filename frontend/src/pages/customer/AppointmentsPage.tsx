@@ -27,7 +27,7 @@ export const AppointmentsPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await appointmentsApi.getMy();
-      const sorted = (res.data || []).slice().sort((a, b) => {
+      const sorted = (res?.data || []).slice().sort((a, b) => {
         const tA = new Date(a.updated_at || a.created_at).getTime();
         const tB = new Date(b.updated_at || b.created_at).getTime();
         return tB - tA;
@@ -35,6 +35,7 @@ export const AppointmentsPage: React.FC = () => {
       setAppointments(sorted);
     } catch (err) {
       console.error('Failed to load appointments:', err);
+      setAppointments([]);
     } finally {
       setIsLoading(false);
     }

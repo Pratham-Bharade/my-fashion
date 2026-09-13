@@ -43,9 +43,10 @@ export const AdminCustomRequestsPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await customRequestsApi.listAdmin({ limit: 50 });
-      setRequests(res.items);
+      setRequests(res?.items || []);
     } catch (err) {
       console.error('Failed to load custom requests:', err);
+      setRequests([]);
     } finally {
       setIsLoading(false);
     }

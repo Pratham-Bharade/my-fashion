@@ -35,13 +35,13 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     try {
       const res = await notificationsApi.list();
-      const currentUnread = res.data.unread_count;
-      const notifs = res.data.notifications;
+      const currentUnread = res?.data?.unread_count ?? 0;
+      const notifs = res?.data?.notifications || [];
 
       // Check if new unread notification arrived
       if (!isInitialLoad.current && currentUnread > prevUnreadCount.current && notifs.length > 0) {
         const latest = notifs[0];
-        if (!latest.is_read) {
+        if (latest && !latest.is_read) {
           info(`🔔 ${latest.title}: ${latest.message}`);
         }
       }

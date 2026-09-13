@@ -32,11 +32,14 @@ export const HomePage: React.FC = () => {
           designsApi.list({ limit: 4 }),
           reviewsApi.getPublic(3),
         ]);
-        setFeaturedServices(srvRes.data.slice(0, 4));
-        setFeaturedDesigns(desRes.items.slice(0, 4));
-        setTestimonials(revRes.data);
+        setFeaturedServices((srvRes?.data || []).slice(0, 4));
+        setFeaturedDesigns((desRes?.items || []).slice(0, 4));
+        setTestimonials(revRes?.data || []);
       } catch (err) {
         console.error('Failed to load homepage data:', err);
+        setFeaturedServices([]);
+        setFeaturedDesigns([]);
+        setTestimonials([]);
       } finally {
         setIsLoading(false);
       }
@@ -135,7 +138,7 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-xs sm:max-w-sm aspect-4/5 rounded-2xl overflow-hidden shadow-md border-2 border-black dark:border-stone-700 bg-stone-100 dark:bg-stone-800">
                 <img
-                  src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80"
+                  src="D:\Ai Projects\fashion\frontend\public\homepage_photo.png"
                   alt="Vandana Creations Saree & Blouse"
                   className="w-full h-full object-cover object-top"
                 />

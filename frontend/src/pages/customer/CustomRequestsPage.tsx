@@ -29,15 +29,16 @@ export const CustomRequestsPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await customRequestsApi.getMy();
-      const sorted = (res.data || []).slice().sort((a, b) => {
+      const sorted = (res?.data || []).slice().sort((a, b) => {
         const tA = new Date(a.updated_at || a.created_at).getTime();
         const tB = new Date(b.updated_at || b.created_at).getTime();
         return tB - tA;
       });
       // Show non-cancelled requests here (cancelled ones are in /cancellations)
-      setRequests(sorted.filter((r) => r.status !== 'CANCELLED'));
+      setRequests(sorted.filter((r) => r?.status && r.status !== 'CANCELLED'));
     } catch (err) {
       console.error('Failed to load custom requests:', err);
+      setRequests([]);
     } finally {
       setIsLoading(false);
     }
